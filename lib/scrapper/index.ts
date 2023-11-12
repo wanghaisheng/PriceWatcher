@@ -1,6 +1,8 @@
+"use server" //changed
+
 import axios from "axios";
 import * as cheerio from 'cheerio';
-import { extractCurrency, extractPrice } from "../utils";
+import { extractCurrency, extractDescription, extractPrice } from "../utils";
 
 export async function scrapeAmazonProduct(url : string){
     
@@ -52,7 +54,7 @@ export async function scrapeAmazonProduct(url : string){
 
         const images = 
         $('#imgBlkFront').attr('data-a-dynamic-image') ||
-        $('#landingImg').attr('data-a-dynamic-image') ||
+        $('#landingImage').attr('data-a-dynamic-image') ||
         '{}';
 
         const imageUrls = Object.keys(JSON.parse(images));
@@ -60,6 +62,8 @@ export async function scrapeAmazonProduct(url : string){
         const currency = extractCurrency($('.a-price-symbol'));
 
         const discountRate = $('.savingsPercentage').text().replace(/[-%]/g, "");
+
+        const description = extractDescription($);
 
         // console.log({title, currentPrice, originalPrice, 
         //     outOfStock, images, imageUrls, currency, discountRate})
@@ -74,16 +78,23 @@ export async function scrapeAmazonProduct(url : string){
             currency : currency || '$',
             image : imageUrls[0],
             title,
-            currentPrice : Number(currentPrice),
-            originalPrice : Number(originalPrice),
+            currentPrice : Number(currentPrice) || Number(originalPrice),
+            originalPrice : Number(originalPrice) || Number(currentPrice),
             priceHistory : [],
             discountRate : Number(discountRate),
             category : 'category', //default/dummy value as of now
             reviewsCount : 100, //default/dummy value as of now
             stars : 4.5, //default/dummy value as of now
             isOutOfStock : outOfStock,
+            description,
+            lowestPrice : Number(currentPrice) || Number(originalPrice),
+            highestPrice : Number(originalPrice) || Number(currentPrice),
+            averagePrice : Number(currentPrice) || Number(originalPrice),
+
 
         }
+
+        return data;
 
     }
 
