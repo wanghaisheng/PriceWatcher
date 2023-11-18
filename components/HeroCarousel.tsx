@@ -47,3 +47,4 @@ const HeroCarousel = () => {
 };
 
 export default HeroCarousel;
+//Carousel
