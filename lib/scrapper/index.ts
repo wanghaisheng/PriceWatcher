@@ -18,7 +18,7 @@ export async function scrapeAmazonProduct(url : string){
 
     const options = {
         auth : {
-            username : '${username} - session -${session-id}',
+            username : '${username}-session-${session-id}',
             password,
 
         },
@@ -35,11 +35,10 @@ export async function scrapeAmazonProduct(url : string){
         //Extract the product title
         const title = $('#productTitle').text().trim();
         const currentPrice = extractPrice(
-            $(' .priceToPay span.a-price-whole'),
+            $('.priceToPay span.a-price-whole'),
             $('.a.size.base.a-color-price'),
-            $('.a-button-selected .a-color-base')
-            
-        );
+            $('.a-button-selected .a-color-base'),
+          );
 
         const originalPrice = extractPrice(
             $('#priceblock_ourprice'),
@@ -99,7 +98,7 @@ export async function scrapeAmazonProduct(url : string){
     }
 
     catch(error : any){
-        throw new Error('Failed to scrape product : ${error.message}')
+        console.log(error);
     }
 
 
